@@ -1,15 +1,15 @@
 import { resolve } from 'node:path';
 
 import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as apigw from 'aws-cdk-lib/aws-apigatewayv2';
+import * as apigwIntegrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
-import * as nodelambda from 'aws-cdk-lib/aws-lambda-nodejs';
-import * as apigw from 'aws-cdk-lib/aws-apigatewayv2';
-import * as apigwIntegrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
+import * as nodelambda from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
+import type { Construct } from 'constructs';
 
 export class RestaurantServerlessStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
