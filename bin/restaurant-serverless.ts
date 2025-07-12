@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
 
-import { RestaurantServerlessStack } from '../lib/restaurant-serverless-stack';
+import { RestaurantServerlessStack } from '../stacks/restaurant-serverless-stack';
 
 const app = new cdk.App();
 new RestaurantServerlessStack(app, 'RestaurantServerlessStack', {
