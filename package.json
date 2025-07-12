@@ -21,6 +21,7 @@
     "@commitlint/config-conventional": "19.8.1",
     "@eslint/js": "9.31.0",
     "@trivago/prettier-plugin-sort-imports": "5.2.2",
+    "@types/aws-lambda": "8.10.150",
     "@types/jest": "29.5.14",
     "@types/node": "22.7.9",
     "aws-cdk": "2.1020.2",
@@ -35,6 +36,9 @@
     "typescript-eslint": "8.36.0"
   },
   "dependencies": {
+    "@aws-lambda-powertools/logger": "2.23.0",
+    "@aws-sdk/client-lambda": "3.844.0",
+    "@aws-sdk/client-sqs": "3.844.0",
     "aws-cdk-lib": "2.202.0",
     "constructs": "10.0.0",
     "ulidx": "2.4.1"
