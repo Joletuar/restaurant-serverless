@@ -6,3 +6,9 @@ node_modules
 # CDK asset staging directory
 .cdk.staging
 cdk.out
+
+# Obligatori
+!commitlint.config.js
+!eslint.config.js
+!lint-staged.config.js
+!prettier.config.js
