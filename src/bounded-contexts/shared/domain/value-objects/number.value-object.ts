@@ -1,5 +1,5 @@
-import { DomainValidationError } from '../errors/domain-validation.error';
-import { RootValueObject } from './root.value-object';
+import { DomainValidationException } from "../exceptions/domain-validation.exception";
+import { RootValueObject } from "./root.value-object";
 
 /**
  * NumberValueObject class is a value object that represents a number.
@@ -20,19 +20,19 @@ export class NumberValueObject extends RootValueObject<number> {
     this.validate(value);
 
     if (value < min || value > max) {
-      throw new DomainValidationError('Number out of range', [
-        `Number value <${value}> is out of range. Expected between ${min} and ${max}.`,
-      ]);
+      throw new DomainValidationException(
+        `Number value <${value}> is out of range. Expected between ${min} and ${max}.`
+      );
     }
 
     return new NumberValueObject(value);
   }
 
   private static validate(value: number): void {
-    if (typeof value !== 'number') {
-      throw new DomainValidationError('Invalid number', [
-        `Number value <${value}> is not a valid number.`,
-      ]);
+    if (typeof value !== "number") {
+      throw new DomainValidationException(
+        `Number value <${value}> is not a valid number.`
+      );
     }
   }
 

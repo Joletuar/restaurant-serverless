@@ -1,0 +1,5 @@
+export enum ErrorCode {
+  DEFAULT_ERROR_CODE = "001",
+  FALIED_DOMAIN_VALIDATION = "002",
+  NOT_FOUND_ENTITY = "003",
+}

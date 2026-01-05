@@ -1,4 +1,4 @@
-import { DomainValidationError } from '../errors/domain-validation.error';
+import { DomainValidationException } from "../exceptions/domain-validation.exception";
 
 export type Primitives = string | number | boolean | Date | Object;
 
@@ -38,9 +38,9 @@ export abstract class RootValueObject<T extends Primitives> {
 
   private ensureIsDefined(): void {
     if (this._value === null || this._value === undefined) {
-      throw new DomainValidationError('Value object is not defined', [
-        `The value object of type <${this.constructor.name}> cannot be null or undefined.`,
-      ]);
+      throw new DomainValidationException(
+        `The value object of type <${this.constructor.name}> cannot be null or undefined.`
+      );
     }
   }
 }
