@@ -1,3 +1,5 @@
+import type { StatusCodes } from 'http-status-codes';
+
 interface Pagination {
   page: number;
   perPage: number;
@@ -14,17 +16,15 @@ interface Metadata {
 
 export interface HttpSuccessResponse<TData> {
   data: TData;
-  statusCode: HttpStatusCode;
+  statusCode: StatusCodes;
   metaData: Metadata;
 }
 
 export interface HttpErrorResponse {
   error: {
     message: string;
-    errorCode: string;
+    cause: string;
   };
-  statusCode: HttpStatusCode;
+  statusCode: StatusCodes;
   metaData: Metadata;
 }
-
-export type HttpResponse = HttpSuccessResponse<any> | HttpErrorResponse;

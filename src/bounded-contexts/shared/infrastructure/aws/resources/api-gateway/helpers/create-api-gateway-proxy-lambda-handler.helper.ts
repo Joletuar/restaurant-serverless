@@ -2,30 +2,47 @@ import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyHandlerV2,
   APIGatewayProxyStructuredResultV2,
+  Context,
 } from 'aws-lambda';
 
 import type { HttpSuccessResponse } from '../types/http-response.interface';
+import { apiGatewayProxyLambdaErrorHandler } from './api-gateway-proxy-lambda-error-handler';
+
+type Handler = (
+  event: APIGatewayProxyEventV2,
+  ctx: Context
+) => Promise<HttpSuccessResponse<any>>;
 
 interface Props {
   handler: Handler;
 }
 
-type Handler = <TData>(
-  event: APIGatewayProxyEventV2
-) => Promise<HttpSuccessResponse<TData>>;
-
 export const createApiGatewayLambdaProxyHandler = (
   props: Props
-): Promise<APIGatewayProxyHandlerV2> => {
+): APIGatewayProxyHandlerV2 => {
   const { handler } = props;
 
   return async (
-    event: APIGatewayProxyEventV2
+    event: APIGatewayProxyEventV2,
+    ctx: Context
   ): Promise<APIGatewayProxyStructuredResultV2> => {
     try {
-      const { data, statusCode } = await handler(event);
-    } catch (error) {
-      const {} = apiGatewayProxyLambdaErrorHandler(error);
+      const { data, statusCode } = await handler(event, ctx);
+
+      return {
+        body: JSON.stringify(data),
+        statusCode,
+      };
+    } catch (err) {
+      const { error, metaData, statusCode } = apiGatewayProxyLambdaErrorHandler(
+        err,
+        ctx
+      );
+
+      return {
+        body: JSON.stringify({ error, metaData }),
+        statusCode,
+      };
     }
   };
 };
