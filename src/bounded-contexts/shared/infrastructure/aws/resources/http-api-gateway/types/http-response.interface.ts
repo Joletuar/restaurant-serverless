@@ -1,6 +1,6 @@
 import type { StatusCodes } from 'http-status-codes';
 
-interface Pagination {
+export interface Pagination {
   page: number;
   perPage: number;
   pageSize: number;

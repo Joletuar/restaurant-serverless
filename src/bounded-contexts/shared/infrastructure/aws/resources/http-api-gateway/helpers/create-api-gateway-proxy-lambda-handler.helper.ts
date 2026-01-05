@@ -4,17 +4,27 @@ import type {
   APIGatewayProxyStructuredResultV2,
   Context,
 } from 'aws-lambda';
+import { StatusCodes } from 'http-status-codes';
 
-import type { HttpSuccessResponse } from '../types/http-response.interface';
+import type {
+  HttpSuccessResponse,
+  Pagination,
+} from '../types/http-response.interface';
 import { apiGatewayProxyLambdaErrorHandler } from './api-gateway-proxy-lambda-error-handler';
 
-type Handler = (
+export type ApiGatwayProxyLambdaHandlerResponse = {
+  data: any;
+  statusCode?: StatusCodes;
+  pagination?: Pagination;
+};
+
+export type ApiGatwayProxyLambdaHandler = (
   event: APIGatewayProxyEventV2,
-  ctx: Context
-) => Promise<HttpSuccessResponse<any>>;
+  ctx?: Context
+) => Promise<ApiGatwayProxyLambdaHandlerResponse>;
 
 interface Props {
-  handler: Handler;
+  handler: ApiGatwayProxyLambdaHandler;
 }
 
 export const createApiGatewayLambdaProxyHandler = (
@@ -27,10 +37,19 @@ export const createApiGatewayLambdaProxyHandler = (
     ctx: Context
   ): Promise<APIGatewayProxyStructuredResultV2> => {
     try {
-      const { data, statusCode } = await handler(event, ctx);
+      const { data, statusCode = StatusCodes.OK } = await handler(event, ctx);
+
+      const res: HttpSuccessResponse<any> = {
+        data,
+        statusCode,
+        metaData: {
+          requestId: ctx.awsRequestId,
+          timestamp: new Date().toISOString(),
+        },
+      };
 
       return {
-        body: JSON.stringify(data),
+        body: JSON.stringify(res),
         statusCode,
       };
     } catch (err) {
