@@ -1,11 +1,7 @@
-import { ErrorCode } from "@src/bounded-contexts/shared/domain/error-code.enum";
-import { DomainException } from "@src/bounded-contexts/shared/domain/exceptions/domain.exception";
+import { NotFoundException } from '@src/bounded-contexts/shared/domain/exceptions/not-found.exception';
 
-export class NotFoundOrderException extends DomainException {
+export class NotFoundOrderException extends NotFoundException {
   constructor(idOrdName: string | number) {
-    super({
-      message: `Order <${idOrdName}> not found`,
-      errorCode: ErrorCode.NOT_FOUND_ENTITY,
-    });
+    super(`Order <${idOrdName}> not found`);
   }
 }
