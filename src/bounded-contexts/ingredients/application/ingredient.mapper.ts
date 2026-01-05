@@ -1,16 +1,11 @@
-import type { Ingredient } from '../domain/ingredient.entity';
-import type { IngredientDto } from './ingredient.dto';
+import type { Ingredient } from "../domain/ingredient.entity";
+import type { IngredientDto } from "./ingredient.dto";
 
 export class IngredientMapper {
   static toDto(ingredient: Ingredient): IngredientDto {
-    const { id, name, createdAt, updatedAt } = ingredient.toPrimitives();
+    const primitives = ingredient.toPrimitives();
 
-    return {
-      id,
-      name,
-      createdAt,
-      updatedAt,
-    };
+    return primitives;
   }
 
   static toDtos(ingredients: Ingredient[]): IngredientDto[] {
