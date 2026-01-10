@@ -1,8 +1,8 @@
-import { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
+import type { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
 
 import { NotFoundOrderException } from "./exceptions/not-found-order.exception";
-import { OrderRepository } from "./order.repository";
-import { Order } from "./order.entity";
+import type { OrderRepository } from "./order.repository";
+import type { Order } from "./order.entity";
 
 export class OrderValidatorDomainService {
   constructor(private readonly orderRepository: OrderRepository) {}

@@ -1,3 +1,3 @@
-import { OrderDto } from "../order.dto";
+import type { OrderDto } from "../order.dto";
 
 export type GetAllOrdersResultDto = OrderDto[];

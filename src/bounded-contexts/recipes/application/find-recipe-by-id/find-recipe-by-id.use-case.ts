@@ -2,8 +2,8 @@ import { RecipeMapper } from "@src/bounded-contexts/recipes/application/recipe.m
 import { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
 
 import type { FindRecipeByIdDto } from "./find-recipe-by-id.dto";
-import { FindRecipeByIdResultDto } from "./find-recipe-by-id-result.dto";
-import { RecipeValidatorDomainService } from "../../domain/recipe-validator.domain-service";
+import type { FindRecipeByIdResultDto } from "./find-recipe-by-id-result.dto";
+import type { RecipeValidatorDomainService } from "../../domain/recipe-validator.domain-service";
 
 export class FindRecipeById {
   constructor(
