@@ -1,4 +1,5 @@
-import { RootException, RootExceptionsProps } from "./root.exception";
+import type { RootExceptionsProps } from "./root.exception";
+import { RootException } from "./root.exception";
 
 export type DomainExceptionProps = Pick<
   RootExceptionsProps,

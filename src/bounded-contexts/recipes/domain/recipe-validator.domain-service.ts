@@ -1,8 +1,8 @@
-import { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
+import type { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
 
-import { RecipeRepository } from "./recipe.repository";
+import type { RecipeRepository } from "./recipe.repository";
 import { NotFoundRecipeException } from "./exceptions/not-found-recipe.exception";
-import { Recipe } from "./recipe.entity";
+import type { Recipe } from "./recipe.entity";
 
 export class RecipeValidatorDomainService {
   constructor(private readonly recipeRepository: RecipeRepository) {}

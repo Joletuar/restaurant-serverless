@@ -2,9 +2,9 @@ import { OrderMapper } from "@src/bounded-contexts/orders/application/order.mapp
 import { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
 
 import type { FindOrderByIdDto } from "./find-order-by-id.dto";
-import { FindOrderByIdResultDto } from "./find-order-by-id-result.dto";
-import { OrderValidatorDomainService } from "../../domain/order-validator.domain-service";
-import { Order } from "../../domain/order.entity";
+import type { FindOrderByIdResultDto } from "./find-order-by-id-result.dto";
+import type { OrderValidatorDomainService } from "../../domain/order-validator.domain-service";
+import type { Order } from "../../domain/order.entity";
 
 export class FindOrderById {
   constructor(

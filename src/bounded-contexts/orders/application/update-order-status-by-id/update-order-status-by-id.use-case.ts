@@ -4,7 +4,7 @@ import { OrderStatus } from "@src/bounded-contexts/orders/domain/value-objects/o
 import { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
 
 import type { UpdateOrderStatusByIdDto } from "./update-order-by-id.dto";
-import { OrderValidatorDomainService } from "../../domain/order-validator.domain-service";
+import type { OrderValidatorDomainService } from "../../domain/order-validator.domain-service";
 
 export class UpdateOrderStatusById {
   constructor(
