@@ -13,8 +13,7 @@
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
     "format": "npx prettier --check .",
-    "format:fix": "npx prettier --write .",
-    "prepare": "husky"
+    "format:fix": "npx prettier --write ."
   },
   "devDependencies": {
     "@commitlint/cli": "19.8.1",
