@@ -10,7 +10,7 @@ import { NotFoundException } from '@src/bounded-contexts/shared/domain/exception
 import { RootException } from '@src/bounded-contexts/shared/domain/exceptions/root.exception';
 
 import type { HttpErrorResponse } from '../types/http-response.interface';
-import { createLambdaLogger } from './lambda-logguer';
+import { createLambdaLogger } from './lambda-logger';
 
 export const apiGatewayProxyLambdaErrorHandler = (
   error: unknown,
