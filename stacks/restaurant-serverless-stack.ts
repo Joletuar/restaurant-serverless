@@ -4,16 +4,14 @@ import * as cdk from 'aws-cdk-lib';
 import * as apigw from 'aws-cdk-lib/aws-apigatewayv2';
 import * as apigwIntegrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as events from 'aws-cdk-lib/aws-events';
-import * as targets from 'aws-cdk-lib/aws-events-targets';
-import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
 import * as nodelambda from 'aws-cdk-lib/aws-lambda-nodejs';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
 import type { Construct } from 'constructs';
 
 export class RestaurantServerlessStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+
+    // ----------> Tables
 
     // Orders Table
 
@@ -32,6 +30,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
     });
 
     // Recipes Table
+
     const recipesTable = new dynamodb.Table(this, 'RecipesTable', {
       tableName: 'RecipesTable',
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -43,6 +42,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
     });
 
     // Ingredients Table
+
     const ingredientsTable = new dynamodb.Table(this, 'IngredientsTable', {
       tableName: 'IngredientsTable',
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -53,7 +53,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       },
     });
 
-    // Lambdas
+    // ----------> Lambdas
 
     const defaultNodeLambdaProps: nodelambda.NodejsFunctionProps = {
       bundling: {
@@ -66,7 +66,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       environment: {},
     };
 
-    // --- Orders
+    // Orders
 
     const createOrderLambdaFunction = new nodelambda.NodejsFunction(
       this,
@@ -79,18 +79,40 @@ export class RestaurantServerlessStack extends cdk.Stack {
       }
     );
 
-    const updateOrderLambdaFunction = new nodelambda.NodejsFunction(
+    const updateOrderStatusByIdLambdaFunction = new nodelambda.NodejsFunction(
       this,
-      'UpdateOrderLambdaFunction',
+      'UpdateOrderStatusByIdLambdaFunction',
       {
         ...defaultNodeLambdaProps,
-        functionName: 'UpdateOrderLambdaFunction',
+        functionName: 'UpdateOrderStatusByIdLambdaFunction',
         timeout: cdk.Duration.minutes(1),
         entry: resolve(''),
       }
     );
 
-    // --- Recipes
+    const getAllOrdersLambdaFunction = new nodelambda.NodejsFunction(
+      this,
+      'GetAllOrdersLambdaFunction',
+      {
+        ...defaultNodeLambdaProps,
+        functionName: 'GetAllOrdersLambdaFunction',
+        timeout: cdk.Duration.minutes(1),
+        entry: resolve(''),
+      }
+    );
+
+    const findOrderByIdLambdaFunction = new nodelambda.NodejsFunction(
+      this,
+      'FindOrderByIdLambdaFunction',
+      {
+        ...defaultNodeLambdaProps,
+        functionName: 'FindOrderByIdLambdaFunction',
+        timeout: cdk.Duration.minutes(1),
+        entry: resolve(''),
+      }
+    );
+
+    // Recipes
 
     const getAllRecipesLambdaFunction = new nodelambda.NodejsFunction(
       this,
@@ -112,7 +134,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       }
     );
 
-    // --- Ingredients
+    // Ingredients
 
     const getAllIngredientsLambdaFunction = new nodelambda.NodejsFunction(
       this,
@@ -134,124 +156,43 @@ export class RestaurantServerlessStack extends cdk.Stack {
       }
     );
 
-    // Queues
+    // ----------> Queues
 
-    // --- Orders
+    // TODO: implement
 
-    const createOrderDlqQueueFifo = new sqs.Queue(
+    // ----------> Event Bus
+
+    // TODO: implement
+
+    // ----------> ApiGW
+
+    const restaurantHttpApigGw = new apigw.HttpApi(
       this,
-      'createOrderDlqQueue.fifo',
+      'RestaurantHttpApigGw',
       {
-        queueName: 'CreateOrderDlqQueueFifo.fifo',
-        fifo: true,
-        retentionPeriod: cdk.Duration.days(3),
-      }
-    );
-
-    const createOrderQueueFifo = new sqs.Queue(this, 'CreateOrderQueueFifo', {
-      queueName: 'CreateOrderQueue.fifo',
-      contentBasedDeduplication: false,
-      fifo: true,
-      deduplicationScope: sqs.DeduplicationScope.MESSAGE_GROUP,
-      retentionPeriod: cdk.Duration.days(1),
-      visibilityTimeout: cdk.Duration.minutes(3),
-      deadLetterQueue: {
-        maxReceiveCount: 3,
-        queue: createOrderDlqQueueFifo,
-      },
-    });
-
-    const orderStatusDlqQueueFifo = new sqs.Queue(
-      this,
-      'OrderStatusDlqQueueFifo',
-      {
-        queueName: 'OrderStatusDlqQueue.fifo',
-        fifo: true,
-        retentionPeriod: cdk.Duration.days(3),
-      }
-    );
-
-    const orderStatusQueueFifo = new sqs.Queue(this, 'OrderStatusQueueFifo', {
-      queueName: 'OrderStatusQueue.fifo',
-      contentBasedDeduplication: false,
-      fifo: true,
-      deduplicationScope: sqs.DeduplicationScope.MESSAGE_GROUP,
-      retentionPeriod: cdk.Duration.days(1),
-      visibilityTimeout: cdk.Duration.minutes(3),
-      deadLetterQueue: {
-        maxReceiveCount: 3,
-        queue: orderStatusDlqQueueFifo,
-      },
-    });
-
-    // Event Bus
-
-    const eventBus = new events.EventBus(this, 'RestaurantEventBus', {
-      eventBusName: 'RestaurantEventBus',
-    });
-
-    // Event rules
-
-    // --- Orders
-
-    const orderCreatedRule = new events.Rule(this, 'OrderCreatedRule', {
-      eventBus,
-      enabled: true,
-      description: 'Evento cuando una orden es creada',
-      ruleName: 'OrderCreatedRule',
-      eventPattern: {
-        source: ['restaurant.orders'],
-        detailType: ['order.created'],
-        detail: {
-          status: 'PENDING',
+        apiName: 'RestaurantHttpApigGw',
+        corsPreflight: {
+          allowCredentials: true,
+          allowOrigins: ['*'],
+          allowMethods: [
+            apigw.CorsHttpMethod.POST,
+            apigw.CorsHttpMethod.PUT,
+            apigw.CorsHttpMethod.PATCH,
+            apigw.CorsHttpMethod.GET,
+            apigw.CorsHttpMethod.OPTIONS,
+          ],
         },
-      },
-      targets: [new targets.LambdaFunction(createOrderLambdaFunction)],
-    });
-
-    const orderStatusUpdatedRule = new events.Rule(
-      this,
-      'OrderStatusUpdatedRule',
-      {
-        eventBus,
-        enabled: true,
-        description: 'Evento cuando el estado de una orden es actualizado',
-        ruleName: 'OrderStatusUpdatedRule',
-        eventPattern: {
-          source: ['restaurant.orders'],
-          detailType: ['order.updated'],
-        },
-        targets: [new targets.LambdaFunction(updateOrderLambdaFunction)],
       }
     );
 
-    // ApiGW
-
-    const restaurantHttpApigGw = new apigw.HttpApi(this, 'HttpApiGw', {
-      apiName: 'RestaurantHttpApigGw',
-      corsPreflight: {
-        allowCredentials: true,
-        allowOrigins: ['*'],
-        allowMethods: [
-          apigw.CorsHttpMethod.POST,
-          apigw.CorsHttpMethod.PUT,
-          apigw.CorsHttpMethod.PATCH,
-          apigw.CorsHttpMethod.GET,
-          apigw.CorsHttpMethod.OPTIONS,
-        ],
-      },
-    });
-
-    // --- Orders
+    // Orders
 
     restaurantHttpApigGw.addRoutes({
       path: '/orders',
       methods: [apigw.HttpMethod.POST],
-      integration: new apigwIntegrations.HttpSqsIntegration(
-        'CreateOrderSqsIntegration',
-        {
-          queue: createOrderQueueFifo,
-        }
+      integration: new apigwIntegrations.HttpLambdaIntegration(
+        'CreateOrderLambdaIntegration',
+        createOrderLambdaFunction
       ),
     });
 
@@ -260,73 +201,77 @@ export class RestaurantServerlessStack extends cdk.Stack {
       methods: [apigw.HttpMethod.GET],
       integration: new apigwIntegrations.HttpLambdaIntegration(
         'GetAllOrdersLambdaIntegration',
-        createOrderLambdaFunction
+        getAllOrdersLambdaFunction
       ),
     });
-
-    // --- Recipes
 
     restaurantHttpApigGw.addRoutes({
-      path: '/recipes/{recipeId}',
+      path: `/orders/{id}`,
       methods: [apigw.HttpMethod.GET],
       integration: new apigwIntegrations.HttpLambdaIntegration(
-        'FindRecipeById',
-        findRecipeByIdLambdaFunction
+        'FindOrderByIdLambdaIntegration',
+        findOrderByIdLambdaFunction
       ),
     });
+
+    // Recipes
 
     restaurantHttpApigGw.addRoutes({
       path: '/recipes',
       methods: [apigw.HttpMethod.GET],
       integration: new apigwIntegrations.HttpLambdaIntegration(
-        'GetAllRecipes',
+        'GetAllRecipesLambdaIntegration',
         getAllRecipesLambdaFunction
       ),
     });
 
-    // --- Ingredients
-
     restaurantHttpApigGw.addRoutes({
-      path: '/ingredients/{ingredientId}',
+      path: `/recipes/{id}`,
       methods: [apigw.HttpMethod.GET],
       integration: new apigwIntegrations.HttpLambdaIntegration(
-        'FindOrderById',
-        findIngredientByIdLambdaFunction
+        'FindRecipeByIdLambdaIntegration',
+        findRecipeByIdLambdaFunction
       ),
     });
+
+    // Ingredients
 
     restaurantHttpApigGw.addRoutes({
       path: '/ingredients',
       methods: [apigw.HttpMethod.GET],
       integration: new apigwIntegrations.HttpLambdaIntegration(
-        'GetAllIngredients',
+        'GetAllIngredientsLambdaIntegration',
         getAllIngredientsLambdaFunction
       ),
     });
 
-    // Permissions
+    restaurantHttpApigGw.addRoutes({
+      path: `/ingredients/{id}`,
+      methods: [apigw.HttpMethod.GET],
+      integration: new apigwIntegrations.HttpLambdaIntegration(
+        'FindIngredientByIdLambdaIntegration',
+        findIngredientByIdLambdaFunction
+      ),
+    });
 
-    // --- Orders
+    // ----------> Permissions
 
-    createOrderLambdaFunction.addEventSource(
-      new lambdaEventSources.SqsEventSource(createOrderQueueFifo, {
-        batchSize: 10,
-        maxConcurrency: 5,
-        reportBatchItemFailures: true,
-      })
-    );
+    // Order lambdas
+
     ordersTable.grantReadWriteData(createOrderLambdaFunction);
     recipesTable.grantReadData(createOrderLambdaFunction);
-    eventBus.grantPutEventsTo(createOrderLambdaFunction);
+    ordersTable.grantReadData(findOrderByIdLambdaFunction);
+    ordersTable.grantReadData(getAllOrdersLambdaFunction);
+    ordersTable.grantReadWriteData(updateOrderStatusByIdLambdaFunction);
 
-    updateOrderLambdaFunction.addEventSource(
-      new lambdaEventSources.SqsEventSource(orderStatusQueueFifo, {
-        batchSize: 10,
-        maxConcurrency: 5,
-        reportBatchItemFailures: true,
-      })
-    );
-    ordersTable.grantReadWriteData(updateOrderLambdaFunction);
-    eventBus.grantPutEventsTo(createOrderLambdaFunction);
+    // Recipe lambdas
+
+    recipesTable.grantReadData(findRecipeByIdLambdaFunction);
+    recipesTable.grantReadData(getAllRecipesLambdaFunction);
+
+    // Ingredient lambdas
+
+    ingredientsTable.grantReadData(findIngredientByIdLambdaFunction);
+    ingredientsTable.grantReadData(getAllIngredientsLambdaFunction);
   }
 }
