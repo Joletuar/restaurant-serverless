@@ -9,16 +9,14 @@ import { DomainException } from '@src/bounded-contexts/shared/domain/exceptions/
 import { NotFoundException } from '@src/bounded-contexts/shared/domain/exceptions/not-found.exception';
 import { RootException } from '@src/bounded-contexts/shared/domain/exceptions/root.exception';
 
+import { createLambdaLogger } from '../../lambda/helpers/lambda-logger';
 import type { HttpErrorResponse } from '../types/http-response.interface';
-import { createLambdaLogger } from './lambda-logger';
 
 export const apiGatewayProxyLambdaErrorHandler = (
   error: unknown,
   ctx: Context
 ): HttpErrorResponse => {
   const logger = createLambdaLogger(ctx);
-
-  logger.error(error as any);
 
   const res: HttpErrorResponse = {
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
@@ -54,8 +52,22 @@ export const apiGatewayProxyLambdaErrorHandler = (
       res.statusCode = StatusCodes.BAD_REQUEST;
     }
 
+    logger.error(
+      {
+        message: error.message,
+      },
+      error as any
+    );
+
     return res;
   }
+
+  logger.error(
+    {
+      message: res.error.message,
+    },
+    error as any
+  );
 
   return res;
 };
