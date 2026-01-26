@@ -1,9 +1,9 @@
 import { GetItemCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { marshall } from '@aws-sdk/util-dynamodb';
 
-import ingredientsEnvirontment from '@src/bounded-contexts/ingredients/config/environment';
 import type { Ingredient } from '@src/bounded-contexts/ingredients/domain/ingredient.entity';
 import type { IngredientRepository } from '@src/bounded-contexts/ingredients/domain/ingredient.repository';
+import ingredientsEnvirontment from '@src/bounded-contexts/ingredients/infrastructure/config/environment';
 import type { Nullable } from '@src/bounded-contexts/shared/domain/nullable.type';
 import type { IdValueObject } from '@src/bounded-contexts/shared/domain/value-objects/id.value-object';
 import { DynamoDbRespository } from '@src/bounded-contexts/shared/infrastructure/aws/resources/dynamodb/types/dynamodb.respository';
