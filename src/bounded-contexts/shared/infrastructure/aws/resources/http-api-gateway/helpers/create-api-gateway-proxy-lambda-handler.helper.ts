@@ -18,13 +18,13 @@ export type ApiGatwayProxyLambdaHandlerResponse = {
   pagination?: Pagination;
 };
 
-export type ApiGatwayProxyLambdaHandler = (
+export type ApiGatewayProxyLambdaHandler = (
   event: APIGatewayProxyEventV2,
   ctx?: Context
 ) => Promise<ApiGatwayProxyLambdaHandlerResponse>;
 
 interface Props {
-  handler: ApiGatwayProxyLambdaHandler;
+  handler: ApiGatewayProxyLambdaHandler;
 }
 
 export const createApiGatewayLambdaProxyHandler = (
