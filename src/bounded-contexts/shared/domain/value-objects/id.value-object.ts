@@ -1,7 +1,7 @@
-import { isValid, ulid } from "ulidx";
+import { isValid, ulid } from 'ulidx';
 
-import { RootValueObject } from "./root.value-object";
-import { DomainValidationException } from "../exceptions/domain-validation.exception";
+import { DomainValidationException } from '../exceptions/domain-validation.exception';
+import { RootValueObject } from './root.value-object';
 
 export class IdValueObject extends RootValueObject<string> {
   static fromPrimitives(value: string): IdValueObject {
@@ -22,7 +22,7 @@ export class IdValueObject extends RootValueObject<string> {
     return new IdValueObject(ulid());
   }
 
-  constructor(value: string) {
+  protected constructor(value: string) {
     super(value);
   }
 }

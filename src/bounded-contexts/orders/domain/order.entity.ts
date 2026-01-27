@@ -1,12 +1,12 @@
 import {
   RootAggregate,
   type RootAggregatePrimitives,
-} from "@src/bounded-contexts/shared/domain/root.aggregate";
-import { IdValueObject } from "@src/bounded-contexts/shared/domain/value-objects/id.value-object";
-import { NumberValueObject } from "@src/bounded-contexts/shared/domain/value-objects/number.value-object";
+} from '@src/bounded-contexts/shared/domain/root.aggregate';
+import { IdValueObject } from '@src/bounded-contexts/shared/domain/value-objects/id.value-object';
+import { NumberValueObject } from '@src/bounded-contexts/shared/domain/value-objects/number.value-object';
 
-import { InvalidOrderStatusTransitionException } from "./exceptions/invalid-order-status-transition.exception";
-import { OrderStatus } from "./value-objects/order-status.value-object";
+import { InvalidOrderStatusTransitionException } from './exceptions/invalid-order-status-transition.exception';
+import { OrderStatus } from './value-objects/order-status.value-object';
 
 export type OrderPrimitives = RootAggregatePrimitives & {
   recipeId: string;
@@ -14,12 +14,12 @@ export type OrderPrimitives = RootAggregatePrimitives & {
 };
 
 export class Order extends RootAggregate<OrderPrimitives> {
-  static fromPrimitives(props: Omit<OrderPrimitives, "id">): Order {
+  static fromPrimitives(props: Omit<OrderPrimitives, 'id'>): Order {
     const { recipeId, status } = props;
 
     return new Order(
       IdValueObject.generateId(),
-      new IdValueObject(recipeId),
+      IdValueObject.fromPrimitives(recipeId),
       OrderStatus.fromPrimitives(status)
     );
   }
