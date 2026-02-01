@@ -29,7 +29,7 @@ export class Order extends RootAggregate<OrderPrimitives> {
     private recipeId: IdValueObject,
     private status: OrderStatus
   ) {
-    super(id, new NumberValueObject(1));
+    super(id, NumberValueObject.fromPrimitives(1));
   }
 
   toPrimitives(): OrderPrimitives {

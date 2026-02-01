@@ -1,5 +1,5 @@
-import { DomainValidationException } from "../exceptions/domain-validation.exception";
-import { RootValueObject } from "./root.value-object";
+import { DomainValidationException } from '../exceptions/domain-validation.exception';
+import { RootValueObject } from './root.value-object';
 
 /**
  * DateValueObject is a value object that represents a date.
@@ -24,7 +24,7 @@ export class DateValueObject extends RootValueObject<Date> {
       );
     }
 
-    if (value.toString() === "Invalid Date") {
+    if (value.toString() === 'Invalid Date') {
       throw new DomainValidationException(
         `Date value <${value.toISOString()}> is invalid.`
       );
@@ -52,7 +52,7 @@ export class DateValueObject extends RootValueObject<Date> {
     return new DateValueObject(new Date());
   }
 
-  constructor(value: Date) {
+  protected constructor(value: Date) {
     super(value);
   }
 

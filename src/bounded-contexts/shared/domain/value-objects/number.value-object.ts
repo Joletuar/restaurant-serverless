@@ -1,5 +1,5 @@
-import { DomainValidationException } from "../exceptions/domain-validation.exception";
-import { RootValueObject } from "./root.value-object";
+import { DomainValidationException } from '../exceptions/domain-validation.exception';
+import { RootValueObject } from './root.value-object';
 
 /**
  * NumberValueObject class is a value object that represents a number.
@@ -29,14 +29,14 @@ export class NumberValueObject extends RootValueObject<number> {
   }
 
   private static validate(value: number): void {
-    if (typeof value !== "number") {
+    if (typeof value !== 'number') {
       throw new DomainValidationException(
         `Number value <${value}> is not a valid number.`
       );
     }
   }
 
-  constructor(value: number) {
+  protected constructor(value: number) {
     super(value);
   }
 
