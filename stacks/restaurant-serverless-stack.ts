@@ -7,6 +7,10 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as nodelambda from 'aws-cdk-lib/aws-lambda-nodejs';
 import type { Construct } from 'constructs';
 
+import ingredientEnv from '../src/bounded-contexts/ingredients/infrastructure/config/environment';
+import ordersEnv from '../src/bounded-contexts/orders/infrastructure/config/environment';
+import recipesEnv from '../src/bounded-contexts/recipes/infrastructure/config/environment';
+
 export class RestaurantServerlessStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -63,7 +67,11 @@ export class RestaurantServerlessStack extends cdk.Stack {
       retryAttempts: 2,
       memorySize: 512,
       timeout: cdk.Duration.seconds(30),
-      environment: {},
+      environment: {
+        ...ingredientEnv,
+        ...ordersEnv,
+        ...recipesEnv,
+      },
     };
 
     // Orders
