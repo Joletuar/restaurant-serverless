@@ -1,5 +1,3 @@
-import { resolve } from 'node:path';
-
 import * as cdk from 'aws-cdk-lib';
 import * as apigw from 'aws-cdk-lib/aws-apigatewayv2';
 import * as apigwIntegrations from 'aws-cdk-lib/aws-apigatewayv2-integrations';
@@ -7,9 +5,11 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as nodelambda from 'aws-cdk-lib/aws-lambda-nodejs';
 import type { Construct } from 'constructs';
 
-import ingredientEnv from '../src/bounded-contexts/ingredients/infrastructure/config/environment';
-import ordersEnv from '../src/bounded-contexts/orders/infrastructure/config/environment';
-import recipesEnv from '../src/bounded-contexts/recipes/infrastructure/config/environment';
+import { LAMBDA_PATHS } from './config/lambda-paths';
+
+// import ingredientEnv from '../src/bounded-contexts/ingredients/infrastructure/config/environment';
+// import ordersEnv from '../src/bounded-contexts/orders/infrastructure/config/environment';
+// import recipesEnv from '../src/bounded-contexts/recipes/infrastructure/config/environment';
 
 export class RestaurantServerlessStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -68,9 +68,9 @@ export class RestaurantServerlessStack extends cdk.Stack {
       memorySize: 512,
       timeout: cdk.Duration.seconds(30),
       environment: {
-        ...ingredientEnv,
-        ...ordersEnv,
-        ...recipesEnv,
+        // ...ingredientEnv,
+        // ...ordersEnv,
+        // ...recipesEnv,
       },
     };
 
@@ -83,7 +83,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
         ...defaultNodeLambdaProps,
         functionName: 'CreateOrderLambdaFunction',
         timeout: cdk.Duration.minutes(1),
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.orders.createOrder,
       }
     );
 
@@ -94,7 +94,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
         ...defaultNodeLambdaProps,
         functionName: 'UpdateOrderStatusByIdLambdaFunction',
         timeout: cdk.Duration.minutes(1),
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.orders.updateOrderStatusById,
       }
     );
 
@@ -105,7 +105,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
         ...defaultNodeLambdaProps,
         functionName: 'GetAllOrdersLambdaFunction',
         timeout: cdk.Duration.minutes(1),
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.orders.getAllOrders,
       }
     );
 
@@ -116,7 +116,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
         ...defaultNodeLambdaProps,
         functionName: 'FindOrderByIdLambdaFunction',
         timeout: cdk.Duration.minutes(1),
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.orders.findOrderById,
       }
     );
 
@@ -128,7 +128,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       {
         ...defaultNodeLambdaProps,
         functionName: 'GetAllRecipesLambdaFunction',
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.recipes.getAllRecipes,
       }
     );
 
@@ -138,7 +138,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       {
         ...defaultNodeLambdaProps,
         functionName: 'FindRecipeByIdLambdaFunction',
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.recipes.findRecipeById,
       }
     );
 
@@ -150,7 +150,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       {
         ...defaultNodeLambdaProps,
         functionName: 'GetAllIngredientsLambdaFunction',
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.ingredients.getAllIngredients,
       }
     );
 
@@ -160,7 +160,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       {
         ...defaultNodeLambdaProps,
         functionName: 'FindIngredientByIdLambdaFunction',
-        entry: resolve(''),
+        entry: LAMBDA_PATHS.ingredients.findIngredientById,
       }
     );
 
@@ -181,7 +181,6 @@ export class RestaurantServerlessStack extends cdk.Stack {
         apiName: 'RestaurantHttpApigGw',
         corsPreflight: {
           allowCredentials: true,
-          allowOrigins: ['*'],
           allowMethods: [
             apigw.CorsHttpMethod.POST,
             apigw.CorsHttpMethod.PUT,
