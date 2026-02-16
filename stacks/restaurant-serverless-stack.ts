@@ -5,11 +5,9 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as nodelambda from 'aws-cdk-lib/aws-lambda-nodejs';
 import type { Construct } from 'constructs';
 
-import { LAMBDA_PATHS } from './config/lambda-paths';
+import ingredientsEnv from '@src/bounded-contexts/ingredients/infrastructure/config/environment';
 
-// import ingredientEnv from '../src/bounded-contexts/ingredients/infrastructure/config/environment';
-// import ordersEnv from '../src/bounded-contexts/orders/infrastructure/config/environment';
-// import recipesEnv from '../src/bounded-contexts/recipes/infrastructure/config/environment';
+import { LAMBDA_PATHS } from './config/lambda-paths';
 
 export class RestaurantServerlessStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -48,7 +46,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
     // Ingredients Table
 
     const ingredientsTable = new dynamodb.Table(this, 'IngredientsTable', {
-      tableName: 'IngredientsTable',
+      tableName: ingredientsEnv.INGREDIENTS_TABLE_NAME,
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       partitionKey: {
@@ -68,7 +66,7 @@ export class RestaurantServerlessStack extends cdk.Stack {
       memorySize: 512,
       timeout: cdk.Duration.seconds(30),
       environment: {
-        // ...ingredientEnv,
+        ...ingredientsEnv,
         // ...ordersEnv,
         // ...recipesEnv,
       },
